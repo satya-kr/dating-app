@@ -108,6 +108,7 @@ const getChats = async (req, res) => {
             city: '$userInfo.city',
             gender: '$userInfo.gender',
             callLevel: '$userInfo.callLevel',
+            images: '$userInfo.images',
           },
           lastMessage: 1,
           lastMessageAt: 1,
