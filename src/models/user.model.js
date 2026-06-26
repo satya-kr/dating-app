@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
     deletionScheduledAt: { type: Date },
     profileCompleteness: { type: Number, default: 0, min: 0, max: 100 },
     wallet: { type: Number, default: 100 },
+    totalCallDuration: { type: Number, default: 0 }, // total seconds of video call as receiver
+    callRatePerMinute: { type: Number, default: 15 },
+    callLevel: { type: Number, default: 0 },
+    credits: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

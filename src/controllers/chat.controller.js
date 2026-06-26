@@ -107,6 +107,7 @@ const getChats = async (req, res) => {
             email: '$userInfo.email',
             city: '$userInfo.city',
             gender: '$userInfo.gender',
+            callLevel: '$userInfo.callLevel',
           },
           lastMessage: 1,
           lastMessageAt: 1,
