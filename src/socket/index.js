@@ -83,6 +83,13 @@ const initSocket = (io) => {
       }
     });
 
+    socket.on('callBusy', ({ to }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callBusy', { from: userId });
+      }
+    });
+
     socket.on('callEnded', ({ to }) => {
       const targetSocketId = onlineUsers.get(to);
       if (targetSocketId) {
