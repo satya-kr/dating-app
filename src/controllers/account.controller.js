@@ -87,4 +87,34 @@ const unblockUser = async (req, res) => {
   }
 };
 
-module.exports = { deactivateAccount, deleteAccount, getBlockedUsers, unblockUser, changePassword };
+// Get wallet balance
+const getWallet = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('wallet');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ balance: user.wallet });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// Deduct from wallet (called after call ends)
+const deductWallet = async (req, res) => {
+  try {
+    const { amount } = req.body;
+    if (!amount || amount <= 0) return res.status(400).json({ message: 'Invalid amount' });
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.wallet < amount) return res.status(400).json({ message: 'Insufficient balance' });
+
+    user.wallet = Math.round((user.wallet - amount) * 100) / 100;
+    await user.save();
+
+    res.json({ balance: user.wallet });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { deactivateAccount, deleteAccount, getBlockedUsers, unblockUser, changePassword, getWallet, deductWallet };

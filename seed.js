@@ -1,4 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({
+  path: './.env'
+});
 const mongoose = require('mongoose');
 const User = require('./src/models/user.model');
 
@@ -15,27 +17,56 @@ const users = [
   { name: 'Riya Joshi', email: 'riya@test.com', phone: '9876543219', password: '00000000', gender: 'female' },
 ];
 
-const seed = async () => {
+// const seed = async () => {
+//   try {
+//     console.log(process.env.DATABASE_URL);
+//     await mongoose.connect(process.env.DATABASE_URL);
+//     console.log('Connected to DB');
+
+//     for (const u of users) {
+//       const exists = await User.findOne({ email: u.email });
+//       if (exists) {
+//         console.log(`Skipped (exists): ${u.name}`);
+//         continue;
+//       }
+//       await User.create(u);
+//       console.log(`Created: ${u.name}`);
+//     }
+
+//     console.log('\nDone! All users have password: 00000000');
+//     process.exit(0);
+//   } catch (error) {
+//     console.error('Seed failed:', error.message);
+//     process.exit(1);
+//   }
+// };
+
+// seed();
+
+
+const updateWallet = async () => {
   try {
+    console.log(process.env.DATABASE_URL);
     await mongoose.connect(process.env.DATABASE_URL);
     console.log('Connected to DB');
 
-    for (const u of users) {
-      const exists = await User.findOne({ email: u.email });
-      if (exists) {
-        console.log(`Skipped (exists): ${u.name}`);
-        continue;
+    const result = await User.updateMany(
+      {}, // Update all users
+      {
+        $set: {
+          wallet: 100,
+        },
       }
-      await User.create(u);
-      console.log(`Created: ${u.name}`);
-    }
+    );
 
-    console.log('\nDone! All users have password: 00000000');
+    console.log(`Matched: ${result.matchedCount} users`);
+    console.log(`Modified: ${result.modifiedCount} users`);
+
     process.exit(0);
   } catch (error) {
-    console.error('Seed failed:', error.message);
+    console.error('Update failed:', error.message);
     process.exit(1);
   }
 };
 
-seed();
+updateWallet();

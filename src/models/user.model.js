@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
     deactivatedAt: { type: Date },
     deletionScheduledAt: { type: Date },
     profileCompleteness: { type: Number, default: 0, min: 0, max: 100 },
+    wallet: { type: Number, default: 100 },
   },
   { timestamps: true }
 );
