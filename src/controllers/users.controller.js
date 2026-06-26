@@ -62,9 +62,11 @@ const getUsers = async (req, res) => {
       query.city = city;
     }
 
-    let sortOption = { createdAt: -1 };
+    let sortOption = { callLevel: -1, createdAt: -1 };
     if (sortBy === 'likes') {
       sortOption = { profileLikes: -1, messageLikes: -1, createdAt: -1 };
+    } else if (sortBy === 'level') {
+      sortOption = { callLevel: -1, totalCallDuration: -1, createdAt: -1 };
     }
 
     const [users, total] = await Promise.all([

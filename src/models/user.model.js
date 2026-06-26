@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema(
     callRatePerMinute: { type: Number, default: 15 },
     callLevel: { type: Number, default: 0 },
     credits: { type: Number, default: 0 },
+    bankDetails: {
+      accountNumber: { type: String, default: '' },
+      ifscCode: { type: String, default: '' },
+      bankName: { type: String, default: '' },
+    },
   },
   { timestamps: true }
 );
