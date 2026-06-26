@@ -21,7 +21,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
       message: 'Registration successful',
-      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, isProfileCompleted: user.isProfileCompleted, profileLikes: user.profileLikes, messageLikes: user.messageLikes },
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, isProfileCompleted: user.isProfileCompleted, profileLikes: user.profileLikes, messageLikes: user.messageLikes, wallet: user.wallet },
       token,
     });
   } catch (error) {
@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
     res.json({
       message: 'Login successful',
-      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, isProfileCompleted: user.isProfileCompleted, profileLikes: user.profileLikes, messageLikes: user.messageLikes },
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, isProfileCompleted: user.isProfileCompleted, profileLikes: user.profileLikes, messageLikes: user.messageLikes, wallet: user.wallet },
       token,
     });
   } catch (error) {
