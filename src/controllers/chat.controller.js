@@ -22,6 +22,54 @@ const getMessages = async (req, res) => {
   }
 };
 
+// Get call history from messages that start with 📹
+const getCallHistory = async (req, res) => {
+  try {
+    const currentUserId = new mongoose.Types.ObjectId(req.userId);
+
+    const calls = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ sender: currentUserId }, { receiver: currentUserId }],
+          text: { $regex: /^📹/ },
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: 'users',
+          let: {
+            otherUser: {
+              $cond: [{ $eq: ['$sender', currentUserId] }, '$receiver', '$sender'],
+            },
+          },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$otherUser'] } } },
+            { $project: { _id: 1, name: 1, images: 1, gender: 1 } },
+          ],
+          as: 'userInfo',
+        },
+      },
+      { $unwind: '$userInfo' },
+      {
+        $project: {
+          _id: 1,
+          text: 1,
+          createdAt: 1,
+          isOutgoing: { $eq: ['$sender', currentUserId] },
+          user: '$userInfo',
+        },
+      },
+      { $limit: 50 },
+    ]);
+
+    res.json({ calls });
+  } catch (error) {
+    console.error('getCallHistory error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 // Get list of users the current user has chatted with + last message
 const getChats = async (req, res) => {
   try {
@@ -73,4 +121,4 @@ const getChats = async (req, res) => {
   }
 };
 
-module.exports = { getMessages, getChats };
+module.exports = { getMessages, getChats, getCallHistory };
