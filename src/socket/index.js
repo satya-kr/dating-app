@@ -61,6 +61,56 @@ const initSocket = (io) => {
       }
     });
 
+    // Video Call Signaling
+    socket.on('callInitiate', ({ to, callerName, callerImage }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('incomingCall', { from: userId, callerName, callerImage });
+      }
+    });
+
+    socket.on('callAccepted', ({ to }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callAccepted', { from: userId });
+      }
+    });
+
+    socket.on('callRejected', ({ to }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callRejected', { from: userId });
+      }
+    });
+
+    socket.on('callEnded', ({ to }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callEnded', { from: userId });
+      }
+    });
+
+    socket.on('callOffer', ({ to, offer }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callOffer', { from: userId, offer });
+      }
+    });
+
+    socket.on('callAnswer', ({ to, answer }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('callAnswer', { from: userId, answer });
+      }
+    });
+
+    socket.on('iceCandidate', ({ to, candidate }) => {
+      const targetSocketId = onlineUsers.get(to);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit('iceCandidate', { from: userId, candidate });
+      }
+    });
+
     socket.on('disconnect', () => {
       onlineUsers.delete(userId);
       User.findByIdAndUpdate(userId, { lastActive: new Date() }).catch(() => {});
