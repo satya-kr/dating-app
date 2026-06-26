@@ -31,6 +31,20 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Request logger middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  const { method, originalUrl, ip } = req;
+  
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const { statusCode } = res;
+    console.log(`[${new Date().toISOString()}] ${method} ${originalUrl} ${statusCode} ${duration}ms - ${ip}`);
+  });
+
+  next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/users', usersRoutes);
