@@ -1,0 +1,8 @@
+Test API Key=rzp_test_T6FnOnI8RosfYP
+
+Test Key Secret=jAdHn1mgDNxDEdil1Ap2CwUm
+
+export const env = {
+  API_URL: 'https://dating-app-1-ij4w.onrender.com/api',
+  SOCKET_URL: 'https://dating-app-1-ij4w.onrender.com',
+};
