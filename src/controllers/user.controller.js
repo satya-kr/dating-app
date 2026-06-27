@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const Post = require('../models/post.model');
+const { filterContent } = require('../utils/contentFilter');
 
 const getUsers = async (req, res) => {
   try {
@@ -56,6 +57,16 @@ const updateProfile = async (req, res) => {
   try {
     const allowedFields = ['name', 'gender', 'interestedIn', 'lookingFor', 'bio', 'city', 'state', 'interests'];
     const updates = {};
+
+    // Check name and bio for prohibited content
+    for (const field of ['name', 'bio']) {
+      if (req.body[field]) {
+        const check = filterContent(req.body[field]);
+        if (!check.safe) {
+          return res.status(400).json({ message: check.reason });
+        }
+      }
+    }
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {

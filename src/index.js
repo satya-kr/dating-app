@@ -18,6 +18,7 @@ const cityRoutes = require('./routes/city.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const levelRoutes = require('./routes/level.routes');
 const withdrawRoutes = require('./routes/withdraw.routes');
+const contactRoutes = require('./routes/contact.routes');
 const { runDeletionCron } = require('./cron/deletion');
 
 const path = require('path');
@@ -61,6 +62,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/level', levelRoutes);
 app.use('/api/withdraw', withdrawRoutes);
 app.use('/api', cityRoutes);
+app.use('/api', contactRoutes);
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
 

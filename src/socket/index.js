@@ -1,6 +1,7 @@
 const { verifyToken } = require('../utils/jwt');
 const Message = require('../models/message.model');
 const User = require('../models/user.model');
+const { filterContent } = require('../utils/contentFilter');
 
 // Map of userId -> socketId
 const onlineUsers = new Map();
@@ -31,6 +32,11 @@ const initSocket = (io) => {
 
     socket.on('sendMessage', async ({ receiverId, text }) => {
       try {
+        const check = filterContent(text);
+        if (!check.safe) {
+          return socket.emit('messageError', { error: check.reason });
+        }
+
         const message = await Message.create({
           sender: userId,
           receiver: receiverId,

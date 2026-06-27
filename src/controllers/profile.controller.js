@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const { completeProfileSchema } = require('../validators/profile.validator');
+const { filterContent } = require('../utils/contentFilter');
 
 const completeProfile = async (req, res) => {
   try {
@@ -9,6 +10,12 @@ const completeProfile = async (req, res) => {
     }
 
     const { lookingFor, gender, interestedIn, interests, state, city, bio } = parsed.data;
+
+    // Check bio for prohibited content
+    const check = filterContent(bio);
+    if (!check.safe) {
+      return res.status(400).json({ message: check.reason });
+    }
 
     const user = await User.findByIdAndUpdate(
       req.userId,
